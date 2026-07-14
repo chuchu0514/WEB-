@@ -1,19 +1,153 @@
+=====================================================
+ HTML
+=====================================================
 
+[요소 종류]
 block (div, p, h1, ul...) → 한 줄 독차지 → 세로로 쌓임
-inline 계열 (input, button...) → 자기 폭만 차지 → 가로로 나란히dma
---------------------------------------------------html
-class 는 띄어쓰기 금지, 하이픈으로 연결
-class 는 중복가능
-id는 고유
---------------------------------------------------css
-<script src="script.js"></script>는 body의 제일 아래
-카드나 버튼이 미리 존재해야 하기 때문 
-"JS 변수엔 const 붙인다" 상수라는 뜻 안 바꾼다 
- DOM(Document Object Model) = JS가 바라보는 "웹페이지
+inline 계열 (input, button...) → 자기 폭만 차지 → 가로로 나란히
 
+[class / id]
+class 는 띄어쓰기 금지, 하이픈으로 연결 (예: date-card)
+class 는 중복 가능 (여러 요소가 같은 class 공유)
+id 는 고유 (문서에서 딱 하나)
+→ 스타일 줄 땐 주로 class, 하나뿐인 건 id
 
- 일반 요소(p, h2, 버튼)의 글자 → .textContent
-입력창(input)의 값 → .value
+[공백 처리]
+HTML 은 공백을 접는다 (whitespace collapsing)
+화면엔 앞뒤/연속 공백 안 보여도 데이터엔 살아있음
+→ 그래서 .trim() 으로 직접 정제해야 함
+"화면이 깨끗해 보여도 데이터는 더러울 수 있다"
 
-=== (엄격한 비교) — 값도 같고 타입도 같아야 참
-== (느슨한 비교) — 비교 전에 타입을 멋대로 바꿔서 맞춰본 뒤 비교
+=====================================================
+ CSS
+=====================================================
+
+[연결]
+<link rel="stylesheet" href="style.css"> 를 head 안에
+
+[문법]
+선택자 { 속성: 값; }
+class 선택은 앞에 점(.)  →  .date-card
+줄 끝마다 세미콜론(;) 필수
+
+[자주 쓰는 속성]
+background-color : 배경색
+color            : 글자색
+padding          : 상자 안쪽 여백
+margin           : 상자 바깥쪽 여백
+border-radius    : 모서리 둥글기 (숫자 클수록 둥글)
+font-size        : 글자 크기
+
+[색상]
+HEX 코드: #RRGGBB (빨강/초록/파랑 각 00~ff)
+글자색은 순검정(#000)보다 살짝 회색(#333)이 눈에 편함
+
+[상속]
+글자 스타일(color, font-size)은 자식에게 흘러내림 (상속 O)
+상자 스타일(background, padding, margin)은 상속 X
+(파이썬 클래스 상속과 비슷 - 자식이 따로 정하면 그게 우선)
+
+[Flexbox]
+부모에 display: flex  →  자식들 가로로 배치
+정렬은 자식이 아니라 "부모"가 지휘한다
+justify-content : center / flex-start / flex-end / space-between / space-around
+gap : 자식들 사이 간격
+
+=====================================================
+ JavaScript
+=====================================================
+
+[연결]
+<script src="script.js"></script> 는 body 의 제일 아래
+이유: JS가 조작할 요소(버튼 등)가 먼저 존재해야 하기 때문
+
+[변수]
+const : 값을 다시 안 바꿀 변수 (상수)
+let   : 값이 바뀌는 변수
+
+[DOM]
+DOM (Document Object Model) = JS가 바라보는 웹페이지
+= JS가 조작할 수 있는 "살아있는 화면"
+※ DOM 을 바꿔도 index.html 파일 자체는 안 바뀜
+  (새로고침하면 파일을 다시 읽어서 DOM 변경분은 사라짐)
+
+[글자 읽고 쓰기]
+일반 요소(p, h2, 버튼)의 글자 → .textContent
+입력창(input)의 값          → .value
+입력창 비우기 → input.value = ""
+
+[이벤트 3단 패턴] ★핵심★
+1. 요소 찾기   : document.getElementById("id")
+2. 귀 달기     : 요소.addEventListener("click", 함수)
+3. 반응        : function() { ... 실행할 일 ... }
+→ 모든 상호작용의 뼈대. 클릭/저장/삭제 다 이 패턴
+
+[요소 선택]
+getElementById("id")     : id로 찾기
+querySelector("li")      : 조건에 맞는 "첫 번째" 하나만
+querySelectorAll("li")   : 조건에 맞는 "전부"
+※ CSS 선택자 문법 그대로 사용 (.class, li 등)
+
+[DOM 조작]
+document.createElement("li")  : 새 요소 만들기 (아직 화면엔 없음)
+부모.appendChild(자식)         : 자식으로 붙이기 (화면에 나타남)
+요소.remove()                 : 요소 통째로 제거
+
+[비교 연산자]
+=== (엄격) : 값도 타입도 같아야 참  → 항상 이걸 씀
+==  (느슨) : 타입을 멋대로 바꿔서 비교 → 예측 불가, 쓰지 말 것
+예: 5 === "5" → false / 5 == "5" → true (함정)
+
+[배열 = 파이썬 리스트]
+.push(값)         : 맨 끝에 추가      (파이썬 append)
+.length           : 개수             (파이썬 len)
+.forEach(함수)     : 하나씩 반복        (파이썬 for x in list)
+.indexOf(값)      : 값의 위치 찾기     (파이썬 index) / 없으면 -1
+.splice(위치, 개수) : 특정 위치의 것 제거
+
+[함정] indexOf 는 "첫 번째" 값만 찾음
+→ 같은 값이 여러 개면 구분 못 함
+→ 해결: 각 데이터에 고유 id 를 붙여서 id로 찾기
+
+[JSON] (localStorage는 문자열만 저장 가능해서 필요)
+JSON.stringify(배열)  : 배열 → 문자열 (저장할 때)  = 파이썬 json.dumps
+JSON.parse(문자열)    : 문자열 → 배열 (꺼낼 때)   = 파이썬 json.loads
+
+.toString() 은 "대충 문자열로" → 되돌리기 불가, 정보 손실
+JSON.stringify 는 "규칙대로 정확히" → 되돌리기 가능, 정보 보존
+※ JSON = 데이터를 문자열로 표현하는 전 세계 공통 약속
+
+[localStorage] 브라우저 저장 공간 (새로고침/재부팅해도 유지)
+localStorage.setItem("키", "값")  : 저장
+localStorage.getItem("키")        : 꺼내기
+※ 문자열만 저장 가능
+※ 첫 방문자는 저장된 게 없어서 null 반환 → null 체크 필요
+
+[세미콜론]
+function 이름() { }        → 세미콜론 X (선언)
+const x = function() { };  → 세미콜론 O (할당)
+요소.addEventListener();   → 세미콜론 O (호출)
+원칙: {} 로 끝나는 선언은 X, 나머지 문장은 O
+
+[호이스팅]
+function 선언은 미리 등록돼서 위치가 자유로움 (아래 있어도 위에서 호출 가능)
+단, 실행문(loadRecords();)은 재료(요소/변수)가 준비된 맨 아래에 둠
+
+=====================================================
+ 코드 정리 원칙
+=====================================================
+
+[관심사 분리]
+"종류별(변수 따로, 함수 따로)" 이 아니라
+"기능별(기록 뭉치, 기분 뭉치)" 로 묶어라
+→ 관련된 건 가까이 있어야 고치기 쉬움 (응집도)
+여러 기능이 공유하는 것만 위쪽 공통 구역에
+
+[주석]
+코드를 반복하는 주석 X   (// text 추가  ← 이런 거)
+"왜(why)" 를 적는 주석 O  (// localStorage는 문자열만 되니까 변환)
+좋은 이름이 최고의 주석   (input, saveRecords 처럼)
+
+[이름 관례]
+JS 는 카멜케이스 : feelingInput (O)
+파이썬 snake_case : feeling_input → JS에선 지양
