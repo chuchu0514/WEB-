@@ -36,12 +36,12 @@ function loadRecords(){
     if(saved === null) return;
 
     records = JSON.parse(saved);
-    records.forEach(function(record){
-        renderRecord(record);
-    })
+
 }
 
 // 이벤트
+
+//기록추가
 addButton.addEventListener("click", function() {
     const text = input.value.trim();  
 
@@ -49,12 +49,18 @@ addButton.addEventListener("click", function() {
         return;
     }
 
-    const record = { id: Date.now(), text: text};
+    if(selectedDate === null){
+        alert("날짜를 먼저 선택해주세요");
+        return;
+    }
+
+
+    const record = { id: Date.now(), text: text, date: selectedDate};
     records.push(record);
     saveRecords();
-    renderRecord(record);
+    renderRecordsBydate();
 
-
+    
     input.value = "";
 });
 
@@ -68,19 +74,11 @@ const calendar = document.getElementById("calendar");
 const today = new Date();
 let currentYear = today.getFullYear();
 let currentMonth = today.getMonth();
+let selectedDate = null;
 
 const prevBtn = document.getElementById("prev-btn");
 const nextBtn = document.getElementById("next-btn");
 
-prevBtn.addEventListener("click", function(){
-    currentMonth = currentMonth - 1;
-    renderCalendar(currentYear, currentMonth);
-});
-
-nextBtn.addEventListener("click", function(){
-    currentMonth = currentMonth + 1;
-    renderCalendar(currentYear, currentMonth);
-});
 
 //함수
 function renderCalendar(year, month){
@@ -105,12 +103,40 @@ function renderCalendar(year, month){
         dayBox.textContent = day;
 
         dayBox.addEventListener("click", function(){
-            console.log(day + "일을 클릭했어요.");
+            const monthStr = String(month + 1).padStart(2, "0");
+            const dayStr = String(day).padStart(2, "0");
+            selectedDate = year + "-" + monthStr + "-" + dayStr;
+
+            const dateTitle = document.getElementById("selected-date-title");
+            dateTitle.textContent = selectedDate + " 기록";
+            renderRecordsBydate();
         });
 
         calendar.appendChild(dayBox);
     }
 }
+
+function renderRecordsBydate(){
+    list.innerHTML = "";
+
+    const filtered = records.filter(function(record){
+    return record.date === selectedDate;
+    });
+    filtered.forEach(function(record){
+        renderRecord(record);
+    })
+}
+//이벤트
+
+prevBtn.addEventListener("click", function(){
+    currentMonth = currentMonth - 1;
+    renderCalendar(currentYear, currentMonth);
+});
+
+nextBtn.addEventListener("click", function(){
+    currentMonth = currentMonth + 1;
+    renderCalendar(currentYear, currentMonth);
+});
 
 // ===================================
 //  실행
