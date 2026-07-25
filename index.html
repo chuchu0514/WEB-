@@ -2,26 +2,32 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>데이트 일지</title>
+    <title></title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Date Diary</h1>
-
+    <h1></h1>
+    <div class="calendar-header">
+        <button id="prev-btn">◀</button>
+        <h2 id="calendar-title"></h2>
+        <button id="next-btn">▶</button>
+    </div>
+    <div class="weekdays">
+        <div>일</div>
+        <div>월</div>
+        <div>화</div>
+        <div>수</div>
+        <div>목</div>
+        <div>금</div>
+        <div>토</div>
+    </div>
+    <div class="calendar" id="calendar"></div>
+    <h3 id="selected-date-title">날짜를 선택해주세요.</h3>
     <div>
         <input id = "date-input" type="text" placeholder="오늘 뭐 했어?">
         <button id="add-btn">기록추가</button>
         <ul id="record-list"></ul>
     </div>
-    <h3 id="selected-date-title">날짜를 선택해주세요.</h3>
-
-    <div class="calendar-header">
-        <button id="prev-btn"></button>
-        <h2 id="calendar-title"></h2>
-        <button id="next-btn"></button>
-    </div>
-    <div class="calendar" id="calendar"></div>
-    
     <script src="script.js"></script>
 </body>
 </html>

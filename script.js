@@ -21,11 +21,12 @@ function renderRecord(record){
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "삭제";
     deleteButton.addEventListener("click", function(){
-        newItem.remove();
 
         const index = records.indexOf(record);
         records.splice(index, 1);
         saveRecords();
+        renderRecordsBydate();
+        renderCalendar(currentYear,currentMonth);
     });
 
     newItem.appendChild(deleteButton);
@@ -59,7 +60,7 @@ addButton.addEventListener("click", function() {
     records.push(record);
     saveRecords();
     renderRecordsBydate();
-
+    renderCalendar(currentYear,currentMonth);
     
     input.value = "";
 });
@@ -78,6 +79,7 @@ let selectedDate = null;
 
 const prevBtn = document.getElementById("prev-btn");
 const nextBtn = document.getElementById("next-btn");
+
 
 
 //함수
@@ -102,14 +104,28 @@ function renderCalendar(year, month){
         dayBox.className = "day";
         dayBox.textContent = day;
 
+        const monthStr = String(month + 1).padStart(2, "0");
+        const dayStr = String(day).padStart(2, "0");
+        const dateStr = year + "-" + monthStr + "-" + dayStr;
+
+        const hasRecord = records.some(function(record){
+            return record.date === dateStr;
+        });
+
+        if(hasRecord){
+            dayBox.classList.add("has-record");
+        }
+        if(selectedDate === dateStr){
+            dayBox.classList.add("selected");
+        }
+
         dayBox.addEventListener("click", function(){
-            const monthStr = String(month + 1).padStart(2, "0");
-            const dayStr = String(day).padStart(2, "0");
-            selectedDate = year + "-" + monthStr + "-" + dayStr;
+            selectedDate = dateStr;
 
             const dateTitle = document.getElementById("selected-date-title");
             dateTitle.textContent = selectedDate + " 기록";
             renderRecordsBydate();
+            renderCalendar(currentYear,currentMonth);
         });
 
         calendar.appendChild(dayBox);
