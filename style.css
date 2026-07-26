@@ -37,10 +37,6 @@ body{
     background-color: #ffe0e6;
 }
 
-.day:focus{
-
-    background-color: #ffffff;
-}
 
 .has-record::after {
     content: "●";
@@ -49,7 +45,9 @@ body{
     color: #ff6b8a;
 }
 
-
+.selected {
+    background-color: #f5c4c4;
+}
 
 #prev-btn, #next-btn {
     cursor: pointer;
