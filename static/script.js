@@ -11,8 +11,13 @@ const addButton = document.getElementById("add-btn");
 const list = document.getElementById("record-list");
 
 // 함수
-function saveRecords(){
-    localStorage.setItem("records", JSON.stringify(records));
+async function addRecords(){
+    await fetch("/api/records",{
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify(record)
+    });
+    await loadRecords();
 }
 function renderRecord(record){
     const newItem = document.createElement("li");
@@ -32,18 +37,18 @@ function renderRecord(record){
     newItem.appendChild(deleteButton);
     list.appendChild(newItem);
 }
-function loadRecords(){
-    const saved = localStorage.getItem("records");
-    if(saved === null) return;
-
-    records = JSON.parse(saved);
+async function loadRecords(){
+    const response = await fetch("/api/records");
+    const data = await response.json();
+    records = data;
+    renderCalendar(currentYear, currentMonth);
 
 }
 
 // 이벤트
 
 //기록추가
-addButton.addEventListener("click", function() {
+addButton.addEventListener("click", async function() {
     const text = input.value.trim();  
 
     if (text === "") {
@@ -57,11 +62,8 @@ addButton.addEventListener("click", function() {
 
 
     const record = { id: Date.now(), text: text, date: selectedDate};
-    records.push(record);
-    saveRecords();
+    await addRecords();
     renderRecordsBydate();
-    renderCalendar(currentYear,currentMonth);
-    
     input.value = "";
 });
 
@@ -158,4 +160,3 @@ nextBtn.addEventListener("click", function(){
 //  실행
 // ===================================
 loadRecords();
-renderCalendar(currentYear, currentMonth);
