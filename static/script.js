@@ -11,7 +11,7 @@ const addButton = document.getElementById("add-btn");
 const list = document.getElementById("record-list");
 
 // 함수
-async function addRecords(){
+async function addRecords(record){
     await fetch("/api/records",{
         method: "POST",
         headers: { "Content-Type": "application/json"},
@@ -62,7 +62,7 @@ addButton.addEventListener("click", async function() {
 
 
     const record = { id: Date.now(), text: text, date: selectedDate};
-    await addRecords();
+    await addRecords(record);
     renderRecordsBydate();
     input.value = "";
 });

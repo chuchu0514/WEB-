@@ -1,12 +1,24 @@
 from flask import Flask, render_template, jsonify, request
 from datetime import datetime
+import json
+
+def save_records():
+    with open("records.json", "w", encoding="utf-8") as f:
+        json.dump(records, f, ensure_ascii=False, indent=2)
+    
+
+def load_records():
+    try:
+        with open("records.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+    
 
 app = Flask(__name__)
 
-records = [
-    {"id": 1, "text": "영화 봤음", "date": "2026-07-20"},
-    {"id": 2, "text": "카페 감", "date": "2026-07-22"}
-]
+records = load_records()
 
 @app.route("/")
 def home():
@@ -21,6 +33,7 @@ def records_api():
     if request.method == "POST":
         data = request.get_json()
         records.append(data)
+        save_records()
         return jsonify(data)
 
     return jsonify(records)
