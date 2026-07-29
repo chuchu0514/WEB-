@@ -19,24 +19,30 @@ async function addRecords(record){
     });
     await loadRecords();
 }
+
+async function deleteRecord(id) {
+    await fetch("/api/records/" + id, {
+        method: "DELETE"
+    });    
+    await loadRecords();
+
+}
+
 function renderRecord(record){
     const newItem = document.createElement("li");
     newItem.textContent = record.text;        
 
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "삭제";
-    deleteButton.addEventListener("click", function(){
-
-        const index = records.indexOf(record);
-        records.splice(index, 1);
-        saveRecords();
+    deleteButton.addEventListener("click", async function(){
+        await deleteRecord(record["id"]);
         renderRecordsBydate();
-        renderCalendar(currentYear,currentMonth);
     });
 
     newItem.appendChild(deleteButton);
     list.appendChild(newItem);
 }
+
 async function loadRecords(){
     const response = await fetch("/api/records");
     const data = await response.json();

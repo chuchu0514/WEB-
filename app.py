@@ -38,6 +38,12 @@ def records_api():
 
     return jsonify(records)
 
+@app.route("/api/records/<int:record_id>", methods = ["DELETE"])
+def delete_record(record_id):
+    global records
+    records = [r for r in records if r["id"] != record_id]
+    save_records()
+    return jsonify(records)
 
 if __name__ == "__main__":
     app.run(debug=True)
