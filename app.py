@@ -1,6 +1,9 @@
 from flask import Flask, render_template, jsonify, request
 from datetime import datetime
 import json
+import sqlite3
+
+DB_NAME = "records.db"
 
 def save_records():
     with open("records.json", "w", encoding="utf-8") as f:
@@ -15,9 +18,26 @@ def load_records():
         return []
 
     
+def get_conn():
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS records(
+            id INTEGER PRIMARY KEY,
+            text TEXT NOT NULL,
+            date TEXT NOT NULL
+        )
+    """)
+    conn.commit()
+    conn.close()
 
 app = Flask(__name__)
-
+init_db()
 records = load_records()
 
 @app.route("/")
@@ -36,7 +56,12 @@ def records_api():
         save_records()
         return jsonify(data)
 
-    return jsonify(records)
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM records")
+    rows = cursor.fetchall()
+    conn.close()
+    return jsonify([dict(row) for row in rows])
 
 @app.route("/api/records/<int:record_id>", methods = ["DELETE"])
 def delete_record(record_id):

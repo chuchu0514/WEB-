@@ -1,32 +1,26 @@
 import sqlite3
 
-# 1. 연결 (파일이 없으면 자동 생성됨)
-conn = sqlite3.connect("test.db")
+conn = sqlite3.connect(":memory:")
 cursor = conn.cursor()
-
-# 2. 표 만들기
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS records (
-        id INTEGER PRIMARY KEY,
-        text TEXT NOT NULL,
-        date TEXT NOT NULL
-    )
-""")
-
-# 3. 넣기
-cursor.execute("INSERT INTO records (text, date) VALUES (?, ?)", ("영화 봤음", "2026-07-20"))
-cursor.execute("INSERT INTO records (text, date) VALUES (?, ?)", ("카페 감", "2026-07-22"))
-
-cursor.execute("UPDATE records SET text = ? WHERE id = ?", ("영화 다시 봄", 2))
+cursor.execute("CREATE TABLE records (id INTEGER PRIMARY KEY, text TEXT, date TEXT)")
+cursor.execute("INSERT INTO records (text, date) VALUES ('영화', '2026-07-20')")
 conn.commit()
 
-# 4. 저장 확정
-conn.commit()
+# ===== row_factory 없이 =====
+cursor.execute("SELECT * FROM records")
+row = cursor.fetchone()
+print("없을 때:", row)
+print("타입:", type(row))
+print("접근:", row[1])
+# print(row["text"])    ← 이거 주석 풀면 에러 남
 
-# 5. 읽기
-cursor.execute("SELECT * FROM records ORDER BY date DESC")
-rows = cursor.fetchall()
-for row in rows:
-    print(row)
-    
+# ===== row_factory 켜고 =====
+conn.row_factory = sqlite3.Row
+cursor = conn.cursor()          # 커서를 새로 만들어야 적용됨
+cursor.execute("SELECT * FROM records")
+row = cursor.fetchone()
+print("있을 때:", row)
+print("타입:", type(row))
+print("접근:", row["text"])     # ← 이름으로 됨!
+
 conn.close()
